@@ -9,6 +9,7 @@ use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\TreeController;
+use App\Http\Controllers\API\DriverController;
 
 /*
 |--------------------------------------------------------------------------
