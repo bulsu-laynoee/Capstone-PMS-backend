@@ -39,3 +39,5 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('/trees', [TreeController::class, 'index']);
     Route::get('/trees/{lead}', [TreeController::class, 'show']);
 });
+Route::get('/drivers', [DriverController::class, 'index']);
+
