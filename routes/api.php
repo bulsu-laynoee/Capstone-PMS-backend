@@ -10,6 +10,8 @@ use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\TreeController;
 use App\Http\Controllers\API\DriverController;
+use App\Http\Controllers\API\ForgotPasswordController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,18 +29,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::controller(RegisterController::class)->group(function(){
-    Route::post('register', 'register');
     Route::post('login', 'login');
 });
-     
-Route::middleware('auth:sanctum')->group( function () {
-    Route::resource('users', UsersController::class);
-    Route::resource('products', ProductController::class);
-    Route::resource('transactions', TransactionController::class);
-    Route::resource('stores', StoreController::class);
-    // Route::resource('trees', TreeController::class);
-    Route::get('/trees', [TreeController::class, 'index']);
-    Route::get('/trees/{lead}', [TreeController::class, 'show']);
-});
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetCode']);
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 Route::get('/drivers', [DriverController::class, 'index']);
 

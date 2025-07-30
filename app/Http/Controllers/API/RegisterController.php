@@ -90,17 +90,27 @@ class RegisterController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request)
-    {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
-            $user = Auth::user(); 
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
-            $success['name'] =  $user->name;
-   
-            return $this->sendResponse($success, 'User login successfully.');
-        } 
-        else{ 
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
-        } 
+public function login(Request $request)
+{
+    $request->validate([
+        'email' => 'required|string|email',
+        'password' => 'required|string',
+        'remember' => 'boolean'
+    ]);
+
+    $credentials = $request->only('email', 'password');
+    $remember = $request->remember ?? false;
+
+    if (!Auth::attempt($credentials, $remember)) {
+        return response()->json(['message' => 'Email or Password is incorrect.'], 401);
     }
+
+    $user = Auth::user();
+    $success['token'] = $user->createToken('MyApp')->plainTextToken;
+    $success['name'] = $user->name;
+
+    return response()->json(['data' => $success, 'message' => 'Login Successfully'], 200);
 }
+
+}
+
