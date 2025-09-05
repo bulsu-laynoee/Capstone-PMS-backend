@@ -57,7 +57,7 @@ class ForgotPasswordController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        // 🚨 Check if new password is the same as current password
+        //  Check if new password is the same as current password
         if (Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'New password cannot be the same as your current password'], 400);
         }
