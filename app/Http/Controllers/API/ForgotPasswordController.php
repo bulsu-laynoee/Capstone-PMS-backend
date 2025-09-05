@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use App\Mail\ResetCodeMail; 
 
 class ForgotPasswordController extends Controller
@@ -22,12 +21,14 @@ class ForgotPasswordController extends Controller
             return response()->json(['message' => 'No user found with that email'], 404);
         }
 
-        $token = Str::random(6); 
+        // Generate 6-digit numeric code instead of random string
+        $token = rand(100000, 999999);
 
         DB::table('password_resets')->updateOrInsert(
             ['email' => $request->email],
             ['token' => $token, 'created_at' => now()]
         );
+
         try {
             Mail::to($request->email)->send(new ResetCodeMail($token));
         } catch (\Exception $e) {
@@ -36,7 +37,6 @@ class ForgotPasswordController extends Controller
 
         return response()->json(['message' => 'Code sent successfully'], 200);
     }
-
 
     public function resetPassword(Request $request)
     {
@@ -56,9 +56,17 @@ class ForgotPasswordController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
+
+        // 🚨 Check if new password is the same as current password
+        if (Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'New password cannot be the same as your current password'], 400);
+        }
+
+        // Update password
         $user->password = Hash::make($request->password);
         $user->save();
 
+        // Remove reset token after success
         DB::table('password_resets')->where('email', $request->email)->delete();
 
         return response()->json(['message' => 'Password reset successful'], 200);
