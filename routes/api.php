@@ -34,4 +34,5 @@ Route::controller(RegisterController::class)->group(function(){
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetCode']);
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 Route::get('/drivers', [DriverController::class, 'index']);
+Route::middleware('auth:sanctum')->post('/logout', [RegisterController::class, 'logout']);
 
