@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\ForgotPasswordController;
 use App\Http\Controllers\API\DriverController;
-use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\API\SettingsController;
 use App\Http\Controllers\API\StoreController;
 use App\Http\Controllers\API\UsersController;
 use App\Http\Controllers\API\ProductController;

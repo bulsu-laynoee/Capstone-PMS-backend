@@ -1,29 +1,26 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class SettingsController extends Controller
 {
-    /**
-     * Get the authenticated user's profile
-     */
+    // Return logged-in user
     public function profile()
     {
         return response()->json(Auth::user());
     }
 
-    /**
-     * Update password
-     */
+    // Change password
     public function updatePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
+            'new_password' => 'required|string|min:6|confirmed',
         ]);
 
         $user = Auth::user();
@@ -38,9 +35,7 @@ class SettingsController extends Controller
         return response()->json(['message' => 'Password updated successfully']);
     }
 
-    /**
-     * Delete account
-     */
+    // Delete account
     public function deleteAccount()
     {
         $user = Auth::user();
