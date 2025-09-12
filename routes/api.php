@@ -44,6 +44,8 @@ Route::get('/drivers', [DriverController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/account', [SettingsController::class, 'profile']);
     Route::post('/account/password', [SettingsController::class, 'updatePassword']);
+    Route::post('/account/update-name', [SettingsController::class, 'updateName']); // Update Name
+    Route::post('/account/update-email', [SettingsController::class, 'updateEmail']); // Update Email
+    Route::post('/account/update-profile-pic', [SettingsController::class, 'updateProfilePic']); // Profile Picture
     Route::delete('/account', [SettingsController::class, 'deleteAccount']);
 });
-
