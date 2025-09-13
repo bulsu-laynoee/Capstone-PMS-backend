@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\ForgotPasswordController;
 use App\Http\Controllers\API\DriverController;
-use App\Http\Controllers\API\SettingsController;
+use App\Http\Controllers\API\SettingsController; // ✅ moved out of API namespace
 use App\Http\Controllers\API\StoreController;
 use App\Http\Controllers\API\UsersController;
 use App\Http\Controllers\API\ProductController;
@@ -43,9 +43,8 @@ Route::get('/drivers', [DriverController::class, 'index']);
 // Account Settings (requires authentication)
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/account', [SettingsController::class, 'profile']);
+    Route::post('/account/update-profile', [SettingsController::class, 'updateProfile']); // ✅ name + email in one request
+    Route::post('/account/update-profile-pic', [SettingsController::class, 'updateProfilePic']); 
     Route::post('/account/password', [SettingsController::class, 'updatePassword']);
-    Route::post('/account/update-name', [SettingsController::class, 'updateName']); // Update Name
-    Route::post('/account/update-email', [SettingsController::class, 'updateEmail']); // Update Email
-    Route::post('/account/update-profile-pic', [SettingsController::class, 'updateProfilePic']); // Profile Picture
-    Route::delete('/account', [SettingsController::class, 'deleteAccount']);
+    Route::delete('/account/delete', [SettingsController::class, 'deleteAccount']); // ✅ clearer delete path
 });

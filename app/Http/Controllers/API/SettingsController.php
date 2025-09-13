@@ -9,65 +9,60 @@ use Illuminate\Support\Facades\Hash;
 
 class SettingsController extends Controller
 {
-    // Return logged-in user
+    // Return logged-in user profile
     public function profile()
     {
         return response()->json(Auth::user());
     }
 
-// Update profile picture
-public function updateProfilePic(Request $request) {
-    $request->validate([
-        'profile_pic' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
-
-    $user = Auth::user();
-
-    if ($request->hasFile('profile_pic')) {
-        // Store the file in storage/app/public/profile_pics
-        $path = $request->file('profile_pic')->store('profile_pics', 'public');
-
-        // Save the accessible path in the database
-        $user->profile_pic = asset('storage/' . $path);
-        $user->save();
-    }
-
-    return response()->json([
-        'message' => 'Profile picture updated successfully',
-        'profile_pic' => $user->profile_pic
-    ]);
-}
-
-    // Update user name
-    public function updateName(Request $request)
+    // Update name, email, and optionally profile picture
+    public function updateProfile(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . Auth::id(),
+            'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $user = Auth::user();
         $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->hasFile('profile_pic')) {
+            $path = $request->file('profile_pic')->store('profile_pics', 'public');
+            $user->profile_pic = asset('storage/' . $path);
+        }
+
         $user->save();
 
-        return response()->json(['message' => 'Name updated successfully']);
+        return response()->json([
+            'message' => 'Profile updated successfully!',
+            'user' => $user
+        ]);
     }
 
-    // Update user email
-    public function updateEmail(Request $request)
+    // Update only profile picture (optional separate endpoint)
+    public function updateProfilePic(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|unique:users,email,' . Auth::id(),
+            'profile_pic' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $user = Auth::user();
-        $user->email = $request->email;
-        $user->save();
 
-        return response()->json(['message' => 'Email updated successfully']);
+        if ($request->hasFile('profile_pic')) {
+            $path = $request->file('profile_pic')->store('profile_pics', 'public');
+            $user->profile_pic = asset('storage/' . $path);
+            $user->save();
+        }
+
+        return response()->json([
+            'message' => 'Profile picture updated successfully',
+            'profile_pic' => $user->profile_pic
+        ]);
     }
 
-
-    // Change password
+    // Update password
     public function updatePassword(Request $request)
     {
         $request->validate([
